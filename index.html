@@ -79,7 +79,7 @@
         .slide {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            padding: 40px 60px 100px 60px; /* added bottom padding for controls */
+            padding: 40px 60px 100px 60px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -102,14 +102,12 @@
             flex-shrink: 0;
         }
 
-        /* Scrollable content area inside the slide */
         .slide-content-scroll {
             flex: 1;
             overflow-y: auto;
             padding-right: 15px;
         }
         
-        /* Text styling */
         .text-block {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid #334155;
@@ -118,13 +116,99 @@
             margin-bottom: 24px;
             font-size: 16px;
             line-height: 1.7;
-            white-space: pre-wrap; /* Preserves line breaks from your text */
-        }
-
-        .text-block p {
-            margin-bottom: 15px;
+            white-space: pre-wrap;
         }
         
+        /* Interactive Flow Diagram Styles */
+        .interactive-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+        .flow-step {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            width: 190px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .flow-step:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 15px 30px rgba(132, 204, 22, 0.2);
+            background: rgba(30, 41, 59, 1);
+        }
+        .flow-icon {
+            font-size: 36px;
+            color: var(--accent);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        .flow-step:hover .flow-icon {
+            transform: scale(1.2);
+        }
+        .flow-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .flow-tool {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .flow-arrow {
+            color: #475569;
+            font-size: 24px;
+            animation: pulseArrow 2s infinite;
+        }
+        @keyframes pulseArrow {
+            0% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(5px); opacity: 1; color: var(--accent); }
+            100% { transform: translateX(0); opacity: 0.5; }
+        }
+        .flow-details {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #0f172a;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            width: max-content;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .flow-details::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 6px 6px 6px;
+            border-style: solid;
+            border-color: transparent transparent var(--accent) transparent;
+        }
+        .flow-step:hover .flow-details {
+            opacity: 1;
+            bottom: -45px;
+        }
+
         /* Controls */
         .controls {
             position: absolute;
@@ -189,7 +273,10 @@
                         <h1 style="font-size: 56px; color: #fff; margin-bottom: 20px;">Freedom Energy <span style="color: var(--accent);">Ukraine</span></h1>
                         <p style="font-size: 24px; color: var(--text-muted); margin-bottom: 15px;">AI-інструменти для прискорення продажів</p>
                         <p style="font-size: 20px; color: var(--accent);">Стратегія, реалізація, промпти. Травень 2026.</p>
-                        <i class="fa-solid fa-robot" style="font-size: 80px; color: #1E3A5F; opacity: 0.5; margin-top: 40px;"></i>
+                        <div style="margin-top: 50px; position: relative;">
+                            <i class="fa-solid fa-robot" style="font-size: 80px; color: #1E3A5F; position: relative; z-index: 2;"></i>
+                            <i class="fa-solid fa-bolt" style="font-size: 40px; color: var(--accent); position: absolute; top: -10px; right: -20px; z-index: 1;"></i>
+                        </div>
                     </div>
                 `
             },
@@ -200,7 +287,56 @@
                 content: `
                     <h2 class="slide-title">Слайд 1. Загальна схема AI-підсиленого циклу продажів</h2>
                     <div class="slide-content-scroll">
-                        <div class="text-block">Нижче — візуальна схема п'яти етапів продажу із зазначенням AI-рішень та ефекту на кожному кроці.</div>
+                        <p style="font-size: 18px; margin-bottom: 20px; text-align: center;">Нижче — візуальна схема п'яти етапів продажу із зазначенням AI-рішень та ефекту на кожному кроці. <br><span style="color: var(--accent); font-size: 14px;">(Наведіть курсор на етапи)</span></p>
+                        
+                        <div class="interactive-flow">
+                            <div class="flow-step">
+                                <div class="flow-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                                <div class="flow-title">1. Пошук лідів</div>
+                                <div class="flow-tool">Apollo.io / Clay</div>
+                                <div class="flow-details">-80% часу на пошук</div>
+                            </div>
+                            
+                            <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                            
+                            <div class="flow-step">
+                                <div class="flow-icon"><i class="fa-solid fa-filter"></i></div>
+                                <div class="flow-title">2. Кваліфікація</div>
+                                <div class="flow-tool">GPT / Скоринг</div>
+                                <div class="flow-details">+3х точність відбору</div>
+                            </div>
+                            
+                            <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                            
+                            <div class="flow-step">
+                                <div class="flow-icon"><i class="fa-solid fa-user-secret"></i></div>
+                                <div class="flow-title">3. Розвідка</div>
+                                <div class="flow-tool">Perplexity API</div>
+                                <div class="flow-details">Досьє за 30 секунд</div>
+                            </div>
+                            
+                            <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                            
+                            <div class="flow-step">
+                                <div class="flow-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                                <div class="flow-title">4. Комунікація</div>
+                                <div class="flow-tool">Instantly.ai</div>
+                                <div class="flow-details">Автопілот розсилок</div>
+                            </div>
+                            
+                            <div class="flow-arrow"><i class="fa-solid fa-arrow-right-long"></i></div>
+                            
+                            <div class="flow-step">
+                                <div class="flow-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                                <div class="flow-title">5. Закриття</div>
+                                <div class="flow-tool">Claude Асистент</div>
+                                <div class="flow-details">Миттєва робота з запереченнями</div>
+                            </div>
+                        </div>
+
+                        <div class="text-block" style="text-align: center; margin-top: 30px;">
+                            Цей процес перетворює хаотичні холодні продажі у системну машину лідогенерації, де людина долучається лише на етапі прийняття рішень.
+                        </div>
                     </div>
                 `
             },
@@ -341,7 +477,7 @@ Follow-up послідовності: якщо немає відповіді 3 �
             {
                 id: "slide7",
                 icon: "fa-solid fa-money-bill-wave",
-                title: "Слайд 7. Інструменти та бюджет",
+                title: "Слайд 7. Бюджет",
                 content: `
                     <h2 class="slide-title">Слайд 7. Рекомендовані інструменти та орієнтовний бюджет</h2>
                     <div class="slide-content-scroll">
@@ -352,7 +488,7 @@ Follow-up послідовності: якщо немає відповіді 3 �
             {
                 id: "slide8",
                 icon: "fa-solid fa-route",
-                title: "Слайд 8. Кейс: Агросектор",
+                title: "Слайд 8. Агросектор",
                 content: `
                     <h2 class="slide-title">Слайд 8. Приклад реалізації: Автоматизація пошуку та розвідки (Кейс: Агросектор)</h2>
                     <div class="slide-content-scroll">
@@ -373,7 +509,7 @@ AI-Розвідка (Брифінг): Як тільки лід з'являєть
             {
                 id: "slide9",
                 icon: "fa-solid fa-cubes",
-                title: "Слайд 9. Три потужні інструменти",
+                title: "Слайд 9. Інструменти",
                 content: `
                     <h2 class="slide-title">Слайд 9. Три потужні інструменти, які зараз є стандартом для автоматизації B2B-продажів та лідогенерації.</h2>
                     <div class="slide-content-scroll">
@@ -408,14 +544,12 @@ Perplexity — це пошукова система нового поколін�
             const mainContainer = document.getElementById('main');
             
             slidesData.forEach((slide, index) => {
-                // Create Nav Item
                 const navItem = document.createElement('div');
                 navItem.className = 'nav-item';
                 navItem.innerHTML = "<i class='" + slide.icon + "'></i> " + slide.title;
                 navItem.onclick = () => goToSlide(index);
                 navContainer.appendChild(navItem);
                 
-                // Create Slide
                 const slideEl = document.createElement('div');
                 slideEl.className = 'slide';
                 slideEl.id = 'slide-' + index;
