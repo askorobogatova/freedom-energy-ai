@@ -58,7 +58,7 @@
             color: var(--text-muted);
             font-weight: 600;
             font-size: 15px;
-        }}
+        }
         .nav-item i { width: 20px; text-align: center; }
         .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
         .nav-item.active {
@@ -79,12 +79,13 @@
         .slide {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            padding: 40px 60px;
+            padding: 40px 60px 100px 60px; /* added bottom padding for controls */
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease, transform 0.4s ease;
             transform: translateY(20px);
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         .slide.active {
             opacity: 1;
@@ -92,28 +93,37 @@
             transform: translateY(0);
         }
         
-        /* Typography & Components */
         .slide-title {
             font-size: 32px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #334155;
             color: #fff;
+            flex-shrink: 0;
         }
-        .content-block {
+
+        /* Scrollable content area inside the slide */
+        .slide-content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+        
+        /* Text styling */
+        .text-block {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid #334155;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
+            font-size: 16px;
+            line-height: 1.7;
+            white-space: pre-wrap; /* Preserves line breaks from your text */
         }
-        .content-block h3 { color: var(--accent); margin-bottom: 15px; font-size: 20px; }
-        p { margin-bottom: 15px; line-height: 1.6; font-size: 16px; }
-        ul { margin-left: 20px; margin-bottom: 15px; }
-        li { margin-bottom: 10px; line-height: 1.5; font-size: 16px; }
-        
-        /* Grid Layouts */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+        .text-block p {
+            margin-bottom: 15px;
+        }
         
         /* Controls */
         .controls {
@@ -139,28 +149,11 @@
         }
         .btn:hover { background: var(--accent); border-color: var(--accent); }
         
-        /* Specific Styles */
-        .doc-image { max-width: 100%; border-radius: 8px; border: 1px solid #334155; margin: 0 auto; display: block; }
-        
-        .table-wrapper { overflow-x: auto; background: rgba(30, 41, 59, 0.5); border-radius: 12px; border: 1px solid #334155; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #334155; font-size: 16px; }
-        th { background-color: var(--primary); color: #fff; font-family: 'Montserrat', sans-serif; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: rgba(255,255,255,0.02); }}
-        
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-        
-        /* Intro Slide */
-        .intro-slide { display: flex; flex-direction: column; justify-content: center; height: 100%; align-items: center; text-align: center; }
-        .intro-slide h1 { font-size: 56px; color: var(--text-main); margin-bottom: 20px; }
-        .intro-slide h1 span { color: var(--accent); }
-        .intro-slide p { font-size: 24px; color: var(--text-muted); max-width: 800px; margin-bottom: 40px; }
-        .intro-badge { background: rgba(132, 204, 22, 0.1); color: var(--accent); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--accent); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
         
         /* Progress Bar */
         #progress-bar { position: absolute; top: 0; left: 0; height: 4px; background: var(--accent); width: 0%; transition: width 0.3s ease; z-index: 20; }
@@ -189,263 +182,220 @@
         const slidesData = [
             {
                 id: "intro",
-                icon: "fa-solid fa-bolt",
-                title: "Головна",
+                icon: "fa-solid fa-home",
+                title: "Титульна сторінка",
                 content: `
-                    <div class="intro-slide">
-                        <div class="intro-badge">Травень 2026</div>
-                        <h1 style="margin-top: 30px;">Freedom Energy <span>Ukraine</span></h1>
-                        <p>AI-інструменти для прискорення продажів: Стратегія, реалізація, промпти.</p>
-                        <i class="fa-solid fa-robot" style="font-size: 80px; color: #1E3A5F; opacity: 0.5;"></i>
+                    <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; align-items: center; text-align: center;">
+                        <h1 style="font-size: 56px; color: #fff; margin-bottom: 20px;">Freedom Energy <span style="color: var(--accent);">Ukraine</span></h1>
+                        <p style="font-size: 24px; color: var(--text-muted); margin-bottom: 15px;">AI-інструменти для прискорення продажів</p>
+                        <p style="font-size: 20px; color: var(--accent);">Стратегія, реалізація, промпти. Травень 2026.</p>
+                        <i class="fa-solid fa-robot" style="font-size: 80px; color: #1E3A5F; opacity: 0.5; margin-top: 40px;"></i>
                     </div>
                 `
             },
             {
-                id: "schema",
+                id: "slide1",
                 icon: "fa-solid fa-diagram-project",
-                title: "Схема AI-циклу",
+                title: "Слайд 1. Загальна схема",
                 content: `
-                    <h2 class="slide-title">1. Загальна схема AI-підсиленого циклу продажів</h2>
-                    <p>Візуальна схема п'яти етапів продажу із зазначенням AI-рішень та ефекту на кожному кроці.</p>
-                    <div style="margin-top: 30px;">
-                        <div style="background: rgba(30, 41, 59, 0.5); padding: 30px; border-radius: 12px; border: 1px solid #334155; text-align: center;">
-                            <h3 style="color: var(--accent); margin-bottom: 20px;">Цикл B2B Продажів</h3>
-                            <p>Пошук лідів (Apollo/Clay) ➔ Кваліфікація (GPT) ➔ Розвідка (Perplexity) ➔ Комунікація (Instantly) ➔ Закриття (Claude Асистент)</p>
-                        </div>
+                    <h2 class="slide-title">Слайд 1. Загальна схема AI-підсиленого циклу продажів</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Нижче — візуальна схема п'яти етапів продажу із зазначенням AI-рішень та ефекту на кожному кроці.</div>
                     </div>
                 `
             },
             {
-                id: "stage12",
-                icon: "fa-solid fa-magnifying-glass",
-                title: "Етапи 1-2",
+                id: "slide2",
+                icon: "fa-solid fa-clock",
+                title: "Слайд 2. Де AI економить час",
                 content: `
-                    <h2 class="slide-title">2. Де AI економить час</h2>
-                    <div class="grid-2">
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-users-viewfinder" style="margin-right:10px;"></i>Етап 1. Пошук лідів та компаній</h3>
-                            <p><strong>Найбільша точка болю:</strong> менеджери вручну шукають компанії, збирають контакти, аналізують ринок.</p>
-                            <ul>
-                                <li><strong>Скрапінг:</strong> реєстри підприємств, ProZorro, LinkedIn, сайти.</li>
-                                <li><strong>AI фільтрує:</strong> компанії з великим споживанням енергії (виробництво, логістика, АПК, будівництво).</li>
-                                <li><strong>Інструменти:</strong> Apollo.io, Clay, Python-скрипт + GPT API.</li>
-                            </ul>
-                        </div>
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-filter" style="margin-right:10px;"></i>Етап 2. Кваліфікація та скоринг</h3>
-                            <p>AI оцінює кожну компанію за критеріями і видає рейтинг — менеджер бачить топ-10 найгарячіших цілей.</p>
-                            <ul>
-                                <li><strong>Критерії:</strong> розмір компанії, галузь, наявність власних потужностей, річний оборот.</li>
-                                <li><strong>Інтеграція з CRM:</strong> автоматичне оновлення статусів (Pipedrive, HubSpot).</li>
-                                <li><strong>Результат:</strong> менеджер витрачає час тільки на перспективних клієнтів.</li>
-                            </ul>
-                        </div>
+                    <h2 class="slide-title">Слайд 2. Де AI економить час — детальний опис</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Етап 1. Пошук лідів та компаній
+Найбільша точка болю: менеджери вручну шукають компанії, збирають контакти, аналізують ринок.
+Скрапінг і аналіз відкритих даних: реєстри підприємств, ProZorro, LinkedIn, сайти компаній.
+AI фільтрує компанії з великим споживанням енергії — виробництво, логістика, АПК, будівництво.
+Інструменти: Apollo.io, Clay, або кастомний Python-скрипт + GPT API.
+
+Етап 2. Кваліфікація та скоринг
+AI оцінює кожну компанію за критеріями і видає рейтинг — менеджер бачить топ-10 найгарячіших цілей.
+Критерії: розмір компанії, галузь, наявність власних потужностей, річний оборот.
+Інтеграція з CRM (Pipedrive, HubSpot): автоматичне оновлення статусів.
+Результат: менеджер витрачає час тільки на перспективних клієнтів.
+
+Етап 3. Розвідка — брифінг перед дзвінком
+Зараз менеджер витрачає 20–40 хвилин, щоб зрозуміти компанію перед першим контактом. AI робить це за 30 секунд.
+Менеджер вводить назву компанії → AI збирає: чим займається, скільки приміщень/виробництв, хто ЛПР.
+Генерує готовий брифінг на 1 сторінку.
+Інструменти: Perplexity Pro API + Claude API, зв'язані через Zapier або Make.
+
+Етап 4. Комунікація з ланцюжком менеджерів
+Найбільш трудомістка частина — десятки листів до того, як дістатися до директора.
+AI-помічник генерує персоналізовані перші листи на основі профілю компанії.
+Follow-up послідовності: якщо немає відповіді 3 дні — автоматично інший варіант листа.
+Аналіз відповідей: AI читає відповідь і підказує менеджеру варіанти реакції.
+Інструменти: Instantly.ai або Lemlist + Claude для генерації текстів.
+
+Етап 5. Закриття угоди — AI-асистент менеджера
+Внутрішній чат-бот, навчений на матеріалах компанії: прайси, кейси, умови, заперечення.
+Менеджер під час дзвінку запитує: «клієнт каже що дорого, що відповісти?» — отримує готову відповідь.
+Генерація КП: «напиши пропозицію для агропідприємства 500 га» — чернетка за 10 секунд.
+Будується на Claude API або GPT API за 2–4 тижні розробки.</div>
                     </div>
                 `
             },
             {
-                id: "stage34",
-                icon: "fa-solid fa-headset",
-                title: "Етапи 3-4",
+                id: "slide3",
+                icon: "fa-solid fa-list-check",
+                title: "Слайд 3. Покроковий план",
                 content: `
-                    <h2 class="slide-title">Етапи 3-4: Розвідка та Комунікація</h2>
-                    <div class="grid-2">
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-eye" style="margin-right:10px;"></i>Етап 3. Розвідка — брифінг</h3>
-                            <p>Зараз менеджер витрачає 20–40 хвилин, щоб зрозуміти компанію перед першим контактом. AI робить це за 30 секунд.</p>
-                            <ul>
-                                <li>Менеджер вводить назву → AI збирає: чим займається, скільки приміщень, хто ЛПР.</li>
-                                <li>Генерує готовий брифінг на 1 сторінку.</li>
-                                <li><strong>Інструменти:</strong> Perplexity Pro API + Claude API.</li>
-                            </ul>
-                        </div>
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-paper-plane" style="margin-right:10px;"></i>Етап 4. Комунікація</h3>
-                            <p>Найбільш трудомістка частина — десятки листів до того, як дістатися до директора.</p>
-                            <ul>
-                                <li>AI генерує персоналізовані перші листи на основі профілю компанії.</li>
-                                <li><strong>Follow-up:</strong> якщо немає відповіді 3 дні — автоматично інший варіант листа.</li>
-                                <li><strong>Інструменти:</strong> Instantly.ai або Lemlist + Claude.</li>
-                            </ul>
-                        </div>
+                    <h2 class="slide-title">Слайд 3. Приклад реалізації — покроковий план</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Тиждень 1–2: Швидкі перемоги (без розробки)
+Крок 1:
+Налаштувати Claude або ChatGPT з вашими матеріалами. Завантажити в AI: прайс, кейси клієнтів, список заперечень і відповіді на них. Менеджери отримують AI-помічника прямо зараз — через звичайний браузер.
+Крок 2:
+Зробити шаблони перших листів під 3–5 ключових галузей (АПК, логістика, виробництво, будівництво, торгівля). Для кожної — окремий шаблон з болями та вигодами саме цієї галузі.
+Крок 3:
+Скласти список 50 цільових компаній вручну + перевірити через LinkedIn Sales Navigator або Apollo.io (безкоштовний пробний). Це перший «живий» тест.
+
+Тиждень 3–4: Автоматизація першого контакту
+Зареєструватися в Instantly.ai (від $37/міс) — автоматичні email-послідовності.
+Написати 3-кроковий follow-up: Лист 1 → через 3 дні Лист 2 (інший кут) → через 5 днів Лист 3 (питання).
+Підключити базову CRM: Pipedrive (безкоштовно до 14 днів) або HubSpot Free.
+Налаштувати автоскоринг: лід відкрив лист 3 рази = «гарячий», передається менеджеру.
+
+Місяць 2–3: Власний AI-асистент для команди
+Розробник (або no-code платформа Bubble/Glide) будує простий чат-інтерфейс.
+Підключається до Claude API або OpenAI API.
+До системного промпту додається вся база знань Freedom Energy.
+Менеджери використовують як внутрішній Telegram-бот або веб-застосунок.
+Вартість: ~$50–150/місяць на API залежно від обсягу використання.
+
+Місяць 3–6: Повна автоматизація пошуку
+Кастомний Python-скрипт: щотижня автоматично збирає нові компанії з реєстрів.
+Перевіряє через LinkedIn API — чи є контакти, хто ЛПР.
+Автоматично завантажує в CRM з попереднім скорингом.
+Менеджер отримує щопонеділка список «нових 20 компаній для роботи цього тижня».</div>
                     </div>
                 `
             },
             {
-                id: "tools_detail",
-                icon: "fa-solid fa-cubes",
-                title: "Опис інструментів",
-                content: `
-                    <h2 class="slide-title">Детальний аналіз ключових AI-інструментів</h2>
-                    <div style="max-height: 440px; overflow-y: auto;">
-                        <div class="content-block" style="margin-bottom:15px;">
-                            <h3>1. Apollo.io (Глобальна база контактів)</h3>
-                            <p>Це гігантська база даних компаній та їхніх співробітників, поєднана з базовою CRM-системою.</p>
-                            <p><strong>Для чого потрібен:</strong> Щоб миттєво знаходити контакти людей, які приймають рішення (ОПР), без ручного "гугління".</p>
-                            <p><strong>Як це працює:</strong> Ви задаєте фільтри (наприклад, <em>"CEO та технічні директори логістичних компаній в Україні зі штатом від 50 до 200 людей"</em>). Apollo генерує список цих людей, надає їхні підтверджені робочі email-адреси, номери телефонів та посилання на LinkedIn.</p>
-                            <p><strong>Роль у продажах:</strong> Це джерело "палива" (лідів) для ваших менеджерів.</p>
-                        </div>
-                        <div class="content-block" style="margin-bottom:15px;">
-                            <h3>2. Perplexity API (Розумний AI-розвідник)</h3>
-                            <p>Perplexity — це пошукова система нового покоління на базі штучного інтелекту. На відміну від класичного ChatGPT, який бере дані з застарілої бази навчання, Perplexity шукає інформацію в інтернеті в <strong>реальному часі</strong>.</p>
-                            <p><strong>Для чого потрібен:</strong> Для миттєвого збору досьє на компанію.</p>
-                            <p><strong>Як це працює:</strong> Ваша система автоматично відправляє запит до Perplexity: <em>"Знайди всі свіжі новини, судові реєстри та інформацію про площі посівів компанії Х за останній рік"</em>. Сервіс за кілька секунд видає коротке резюме з посиланнями.</p>
-                            <p><strong>Роль у продажах:</strong> Економить менеджерам години часу на підготовку. Вони одразу знають, чим живе клієнт сьогодні.</p>
-                        </div>
-                        <div class="content-block" style="margin-bottom:15px;">
-                            <h3>3. Instantly.ai (Машина для "холодних" листів)</h3>
-                            <p>Це вузькоспеціалізована платформа для масової відправки холодних листів (cold outreach) таким чином, щоб вони гарантовано <strong>не потрапляли в "Спам"</strong>.</p>
-                            <p><strong>Для чого потрібен:</strong> Для автоматизації першого контакту та подальших нагадувань (follow-ups).</p>
-                            <p><strong>Як це працює:</strong> Ви завантажуєте базу контактів (з Apollo), налаштовуєте ланцюжок листів. Якщо людина не відповідає на 1-й лист, система автоматично надсилає наступні за графіком. При отриманні відповіді — сервіс зупиняє розсилку.</p>
-                            <p><strong>Роль у продажах:</strong> Має функцію "прогріву" скриньок (warm-up), яка забезпечує доставку комерційних пропозицій прямо у папку "Вхідні".</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                id: "case_integration",
-                icon: "fa-solid fa-route",
-                title: "Конкретний приклад",
-                content: `
-                    <h2 class="slide-title">Конкретний приклад: Технічна інтеграція без коду</h2>
-                    <p style="margin-bottom: 15px;">Приклад реалізації зв'язку інструментів у єдину екосистему за допомогою No-Code платформ (Make.com або Zapier):</p>
-                    <div class="grid-2" style="grid-template-columns: 1.2fr 0.8fr;">
-                        <div style="max-height: 380px; overflow-y: auto; padding-right: 10px;">
-                            <div class="content-block" style="padding: 15px; margin-bottom: 12px;">
-                                <p style="margin-bottom:0;"><strong>1. Тригер (Збір бази):</strong> Менеджер задає в Apollo.io фільтр: <em>"Агрокомпанії України, від 100 співробітників"</em>. Apollo знаходить компанію "Агро-Трейд" і автоматично передає дані до CRM (Pipedrive / KeyCRM).</p>
-                            </div>
-                            <div class="content-block" style="padding: 15px; margin-bottom: 12px;">
-                                <p style="margin-bottom:0;"><strong>2. AI-Розвідка (Брифінг):</strong> Як тільки лід з'являється в CRM, автоматика відправляє запит до Perplexity API: <em>"Знайди всі свіжі новини, судові реєстри та інформацію про площі посівів компанії Агро-Трейд"</em>.</p>
-                            </div>
-                            <div class="content-block" style="padding: 15px; margin-bottom: 12px;">
-                                <p style="margin-bottom:0;"><strong>3. Генерація листа (Комунікація):</strong> Дані передаються в Claude API або GPT-4. AI отримує вказівку: <em>"Напиши персоналізований лист директору, згадавши їхні великі площі посівів, і запропонуй сонячну станцію для економії на зберіганні зерна"</em>.</p>
-                            </div>
-                            <div class="content-block" style="padding: 15px; margin-bottom: 12px;">
-                                <p style="margin-bottom:0;"><strong>4. Відправка:</strong> Готовий персоналізований лист автоматично потрапляє в платформу розсилок Instantly і надсилається від імені реального менеджера.</p>
-                            </div>
-                        </div>
-                        <div class="content-block" style="background: rgba(132, 204, 22, 0.1); border-color: var(--accent); display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 20px;">
-                            <i class="fa-solid fa-trophy" style="font-size: 48px; color: var(--accent); margin-bottom: 15px;"></i>
-                            <h3 style="color:#fff; font-size:20px; margin-bottom:10px;">5. Кінцевий результат</h3>
-                            <p style="font-size: 15px; color: var(--text-main); line-height: 1.5;">Менеджер Freedom Energy не шукав компанію, не гуглив її історію і не писав лист власноруч. Він лише отримує сповіщення в CRM: <br><br><strong style="color: var(--accent); font-size: 16px;">"Директор Агро-Трейд відповів на лист і хоче побачити розрахунки"</strong>.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                id: "stage5",
-                icon: "fa-solid fa-handshake",
-                title: "Етап 5",
-                content: `
-                    <h2 class="slide-title">Етап 5. Обробка заперечень та закриття угод</h2>
-                    <div class="content-block">
-                        <p>На фінальних етапах, коли директор сумнівається або "йде думати", менеджер використовує внутрішнього AI-ментора.</p>
-                        <ul>
-                            <li>AI допомагає знайти контраргументи (фінансові розрахунки, швидка окупність, страх підвищення тарифів).</li>
-                            <li>Допомагає швидко структурувати комерційну пропозицію.</li>
-                        </ul>
-                    </div>
-                `
-            },
-            {
-                id: "bot",
-                icon: "fa-solid fa-robot",
-                title: "Прототип бота",
-                content: `
-                    <h2 class="slide-title">3. Прототип внутрішнього бота-асистента</h2>
-                    <div class="grid-2">
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-users" style="margin-right:10px;"></i>Роль бота</h3>
-                            <p>Внутрішній "суфлер" та аналітик для команди продажів. Його мета — допомагати відповідати на складні запитання, складати КП та готуватися до дзвінків.</p>
-                            <h3 style="margin-top:20px;"><i class="fa-solid fa-plug" style="margin-right:10px;"></i>Інтеграція</h3>
-                            <ul>
-                                <li>Можна використовувати платформу Poe.com або ChatGPT Team і створити кастомного GPT.</li>
-                                <li>Завантажити туди файли з цінами, брошурами, кейсами компанії.</li>
-                                <li>Вставити базовий промпт, щоб він розумів свій контекст.</li>
-                            </ul>
-                        </div>
-                        <div class="content-block" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                            <i class="fa-solid fa-comments" style="font-size: 60px; color: var(--accent); margin-bottom: 20px;"></i>
-                            <p style="font-size: 18px;">AI-асистент відповідає на питання менеджера 24/7, використовуючи внутрішню базу знань Freedom Energy та методологію SPIN.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                id: "prompt",
+                id: "slide4",
                 icon: "fa-solid fa-terminal",
-                title: "Базовий промпт",
+                title: "Слайд 4. Промпт для бота",
                 content: `
-                    <h2 class="slide-title">4. Базовий промпт для налаштування бота</h2>
-                    <div class="content-block" style="font-family: monospace; font-size: 14px; background: #000; border-left: 4px solid var(--accent); white-space: pre-wrap; height: 380px; overflow-y: auto; color: #a5b4fc;">Ти – експертний помічник менеджера з B2B продажів компанії Freedom Energy Ukraine.
-Твоя мета: швидко надавати інформацію, генерувати тексти листів та допомагати обробляти заперечення.
-Тон спілкування: професійний, діловий, переконливий, без води.
+                    <h2 class="slide-title">Слайд 4. Промпт для AI-асистента менеджера Freedom Energy</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block" style="font-family: monospace; background: #000; color: #a5b4fc; border-left: 4px solid var(--accent);">Це системний промпт, який вставляється в налаштування AI-бота. Він визначає, як бот поводиться, що знає і як відповідає.
+
+Ти — Senior AI-ментор та асистент менеджера з B2B продажів компанії Freedom Energy Ukraine. 
+Твоя мета — допомагати менеджерам закривати складні угоди на встановлення сонячних електростанцій (мережеві, гібридні, системи зберігання) та продаж паливної енергетики.
+
+Твій стиль спілкування: лаконічний, професійний, орієнтований на результат. Ніякої зайвої "води". Ти використовуєш методологію продажів SPIN (Ситуаційні, Проблемні, Імплікаційні, Направляючі питання).
+
+Коли менеджер звертається до тебе із запереченням клієнта або просить підготувати лист, ти завжди дотримуєшся такої структури:
+1. Аналіз ситуації: Коротко оцінюєш психологічний стан клієнта (чому він це каже).
+2. Варіанти реакції (Мінімум 2):
+   - Варіант А: М'який підхід (навчання, надання цінності, кейси).
+   - Варіант Б: Аналітичний підхід (цифри, ROI, окупність).
+3. Питання для перехоплення ініціативи (За методологією SPIN): Що менеджер має запитати далі, щоб клієнт сам усвідомив потребу.
 
 Матеріали компанії для оперування:
-- Електроенергія постійно дорожчає, окупність стає швидшою.
-- Встановлення СЕС — це енергонезалежність і безперебійна робота виробництва.
 - Ми пропонуємо Tier-1 обладнання.
 - У нас є портфоліо та гарантія.
+- Електроенергія постійно дорожчає, кожен місяць очікування = втрачена економія.
 - Можливий безкоштовний аудит.
 
-Інструкції по роботі із запереченнями:
-• «Дорого» → переведи фокус на ROI, вартість кіловата та страховку від блекаутів
-• «Ми подумаємо» → запропонуй безкоштовний розрахунок/аудит, конкретна дата
-• «Не впевнені в надійності» → Tier-1 обладнання, гарантія, portfolio, сервіс 24/7
-• «Зараз не час» → ціни на електроенергію ростуть, кожен місяць = втрачена економія
-• «Є дешевші» → порівняй якість обладнання, гарантії, строки окупності</div>
+Приклад взаємодії:
+Менеджер: "Клієнт каже, що зараз не на часі інвестувати такі суми (дорого)".
+Твоя відповідь:
+[Аналіз]: Клієнт боїться заморозити капітал в умовах невизначеності.
+[Варіант А - М'який]: "Розумію вас. Багато наших клієнтів з [сфера клієнта] спочатку казали те саме. Але після безкоштовного аудиту ми знайшли спосіб, як станція буде сама себе окупати з 1-го місяця. Давайте просто порахуємо, без зобов'язань?"
+[Варіант Б - Цифри]: "Саме тому, що зараз складні часи, ми пропонуємо рішення, яке фіксує вартість кіловата для вас на наступні 10 років. Тарифи виростуть, а ваші витрати — ні."
+[Питання SPIN]: "Скільки ви втратите за наступні 6 місяців, якщо тарифи на електроенергію для бізнесу знову зростуть на 15%?"</div>
+                    </div>
                 `
             },
             {
-                id: "examples",
+                id: "slide6",
                 icon: "fa-solid fa-comment-dots",
-                title: "Приклади запитів",
+                title: "Слайд 6. Приклади запитів",
                 content: `
-                    <h2 class="slide-title">Приклади запитів менеджера до бота</h2>
-                    <div class="grid-2">
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-money-bill-transfer" style="margin-right:10px;"></i>Заперечення «дорого»</h3>
-                            <p style="font-style: italic; color: #94a3b8;">"Клієнт (виробництво меблів) каже: «У нас зараз немає бюджету, це дорого». Що відповісти?"</p>
-                        </div>
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-envelope" style="margin-right:10px;"></i>Перший лист</h3>
-                            <p style="font-style: italic; color: #94a3b8;">"Напиши перший холодний лист для агропідприємства (зернові, 800 га), мета — домовитись на зустріч."</p>
-                        </div>
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-file-invoice" style="margin-right:10px;"></i>КП-структура</h3>
-                            <p style="font-style: italic; color: #94a3b8;">"Склади структуру комерційної пропозиції для логістичної компанії з 3 складами загальною площею 5000 м²."</p>
-                        </div>
-                        <div class="content-block">
-                            <h3><i class="fa-solid fa-phone" style="margin-right:10px;"></i>Підготовка до дзвінку</h3>
-                            <p style="font-style: italic; color: #94a3b8;">"Я дзвоню директору будівельної компанії вперше. Які 3 питання поставити, щоб зрозуміти потребу?"</p>
-                        </div>
+                    <h2 class="slide-title">Слайд 6. Приклади запитів менеджера до бота</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Приклад: Заперечення «дорого»
+Запит менеджера: Клієнт (виробництво меблів) каже: «У нас зараз немає бюджету, це дорого». Що відповісти?
+
+Приклад: Перший лист
+Запит менеджера: Напиши перший холодний лист для агропідприємства (зернові, 800 га), мета — домовитись на зустріч.
+
+Приклад: КП-структура
+Запит менеджера: Склади структуру комерційної пропозиції для логістичної компанії з 3 складами загальною площею 5000 м².
+
+Приклад: Підготовка до дзвінку
+Запит менеджера: Я дзвоню директору будівельної компанії вперше. Які 3 питання поставити, щоб зрозуміти потребу?</div>
                     </div>
                 `
             },
             {
-                id: "budget",
+                id: "slide7",
                 icon: "fa-solid fa-money-bill-wave",
-                title: "Бюджет",
+                title: "Слайд 7. Інструменти та бюджет",
                 content: `
-                    <h2 class="slide-title">5. Рекомендовані інструменти та орієнтовний бюджет</h2>
-                    <div class="table-wrapper">
-                        <table>
-                            <tr>
-                                <th>Завдання</th>
-                                <th>Інструмент</th>
-                                <th>Вартість/міс</th>
-                                <th>Пріоритет</th>
-                            </tr>
-                            <tr><td>Пошук лідів</td><td>Apollo.io / Clay</td><td>$49–99</td><td style="color:#fbbf24;">★★★★★</td></tr>
-                            <tr><td>Email розсилки</td><td>Instantly.ai / Lemlist</td><td>$37–59</td><td style="color:#fbbf24;">★★★★★</td></tr>
-                            <tr><td>Брифінг і розвідка</td><td>Perplexity Pro</td><td>$20</td><td style="color:#fbbf24;">★★★★☆</td></tr>
-                            <tr><td>Транскрибація дзвінків</td><td>Fireflies.ai / Fathom</td><td>$0–18</td><td style="color:#fbbf24;">★★★☆☆</td></tr>
-                            <tr><td>Внутрішній AI (промпти)</td><td>ChatGPT Plus / Claude Pro</td><td>$20</td><td style="color:#fbbf24;">★★★★★</td></tr>
-                        </table>
+                    <h2 class="slide-title">Слайд 7. Рекомендовані інструменти та орієнтовний бюджет</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Загальний стартовий бюджет: від $165 до $400 на місяць для повного AI-стеку. Окупається з першої закритої угоди.</div>
                     </div>
-                    <div style="text-align: right; margin-top: 20px; padding: 20px;">
-                        <h2 style="color: var(--accent);">Успішних продажів!</h2>
-                        <p>Документ підготовлено у травні 2026 р.</p>
+                `
+            },
+            {
+                id: "slide8",
+                icon: "fa-solid fa-route",
+                title: "Слайд 8. Кейс: Агросектор",
+                content: `
+                    <h2 class="slide-title">Слайд 8. Приклад реалізації: Автоматизація пошуку та розвідки (Кейс: Агросектор)</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Ось конкретний приклад того, як можна технічно зв'язати ці інструменти без знання програмування (використовуючи платформу Make.com або Zapier):
+
+Тригер (Збір бази): Менеджер задає в Apollo.io фільтр: "Агрокомпанії України, від 100 співробітників". Apollo знаходить компанію "Агро-Трейд" і автоматично передає дані (через Make.com) до вашої CRM (наприклад, Pipedrive або KeyCRM).
+
+AI-Розвідка (Брифінг): Як тільки лід з'являється в CRM, автоматика відправляє запит до Perplexity API: "Знайди всі свіжі новини, судові реєстри та інформацію про площі посівів компанії Агро-Трейд".
+
+Генерація листа (Комунікація): Дані з розвідки передаються в Claude API або GPT-4. Штучний інтелект отримує вказівку: "Напиши персоналізований лист директору, згадавши їхні великі площі посівів, і запропонуй сонячну станцію для економії на зберіганні зерна".
+
+Відправка: Готовий лист автоматично потрапляє в платформу розсилок (наприклад, Instantly) і відправляється від імені менеджера.
+
+Результат: Менеджер Freedom Energy не шукав компанію, не гуглив її історію і не писав лист. Він лише отримує сповіщення: "Директор Агро-Трейд відповів на лист і хоче побачити розрахунки".</div>
+                    </div>
+                `
+            },
+            {
+                id: "slide9",
+                icon: "fa-solid fa-cubes",
+                title: "Слайд 9. Три потужні інструменти",
+                content: `
+                    <h2 class="slide-title">Слайд 9. Три потужні інструменти, які зараз є стандартом для автоматизації B2B-продажів та лідогенерації.</h2>
+                    <div class="slide-content-scroll">
+                        <div class="text-block">Ось пояснення кожного з них:
+
+1. Apollo.io (Глобальна база контактів)
+Це гігантська база даних компаній та їхніх співробітників, поєднана з базовою CRM-системою.
+Для чого потрібен: Щоб миттєво знаходити контакти людей, які приймають рішення (ОПР), без ручного "гугління".
+Як це працює: Ви задаєте фільтри (наприклад, "CEO та технічні директори логістичних компаній в Україні зі штатом від 50 до 200 людей"). Apollo генерує список цих людей, надає їхні підтверджені робочі email-адреси, номери телефонів та посилання на LinkedIn.
+Роль у продажах: Це джерело "палива" (лідів) для ваших менеджерів.
+
+2. Perplexity API (Розумний AI-розвідник)
+Perplexity — це пошукова система нового покоління на базі штучного інтелекту. На відміну від класичного ChatGPT, який бере дані з того, на чому його навчили колись, Perplexity шукає інформацію в інтернеті в реальному часі. Абревіатура "API" означає, що ви можете програмно підключити цей сервіс до своїх інструментів.
+Для чого потрібен: Для миттєвого збору досьє на компанію.
+Як це працює: Ваша система автоматично відправляє запит до Perplexity: "Знайди всі свіжі новини, тендери та інформацію про керівництво компанії Х за останній рік". Perplexity за кілька секунд "читає" десятки сайтів і видає коротке резюме з посиланнями на джерела.
+Роль у продажах: Економить менеджерам години часу на підготовку до дзвінка. Вони одразу знають, чим живе клієнт сьогодні.
+
+3. Instantly.ai (Машина для "холодних" листів)
+Це вузькоспеціалізована платформа для масової відправки холодних листів (cold outreach) таким чином, щоб вони гарантовано не потрапляли в "Спам".
+Для чого потрібен: Для автоматизації першого контакту та подальших нагадувань (follow-ups).
+Як це працює: Ви завантажуєте базу контактів (з того ж Apollo). Налаштовуєте ланцюжок листів. Якщо людина не відповідає на перший лист, Instantly автоматично надсилає другий через 3 дні, потім третій через тиждень. Як тільки людина відповідає — сервіс зупиняє розсилку і передає діалог живому менеджеру.
+Роль у продажах: Сервіс має унікальну функцію "прогріву" поштових скриньок (warm-up), яка штучно створює активність на вашій пошті, щоб алгоритми Gmail чи Outlook завжди доставляли ваші комерційні пропозиції прямо у папку "Вхідні".</div>
                     </div>
                 `
             }
